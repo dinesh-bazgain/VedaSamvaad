@@ -1,17 +1,19 @@
-import React from 'react'
-import './app.css'
-import HomePage from './pages/HomePage'
-import ProfilePage from './pages/ProfilePage'
-import LoginPage from './pages/LoginPage'
+import React from "react";
+import { Route, Routes } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import ProfilePage from "./pages/ProfilePage";
+import LoginPage from "./pages/LoginPage";
 
 const App = () => {
   return (
     <div>
-      <HomePage/>
-      <LoginPage/>
-      <ProfilePage/>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+      </Routes>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
