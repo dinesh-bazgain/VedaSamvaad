@@ -6,7 +6,7 @@ import LoginPage from "./pages/LoginPage";
 
 const App = () => {
   return (
-    <div>
+    <div className="min-h-screen bg-gray-400 bg-[url('./public/background.png')] bg-no-repeat bg-center bg-[length:200px_200px] ">
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
