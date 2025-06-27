@@ -6,9 +6,11 @@ import RightSidebar from "../components/RightSidebar";
 const HomePage = () => {
   return (
     <div className="border w-full h-screen sm:px-[15%] sm:py-[5%]">
-      <Sidebar />
-      <ChatContainer />
-      <RightSidebar />
+      <div className="">
+        <Sidebar />
+        <ChatContainer />
+        <RightSidebar />
+      </div>
     </div>
   );
 };
