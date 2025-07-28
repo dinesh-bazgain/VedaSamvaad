@@ -39,4 +39,4 @@ jspm_packages
 
 #Excluding build directory
 public/
-frontend/src/assets/images/
+frontend/src/assets/
