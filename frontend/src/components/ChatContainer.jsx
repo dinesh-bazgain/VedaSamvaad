@@ -16,7 +16,7 @@ const ChatContainer = ({ selectedUser, setSelectedUser }) => {
         <img src={assets.profile_martin} alt="" className="w-8 rounded-full" />
         <p className="flex-1 text-lg text-white flex items-center gap-2">
           Martin Guptil
-          <span className="w-3 h-3 rounded-full bg-green-300"></span>
+          <span className="w-3 h-3 rounded-full bg-green-400"></span>
         </p>
         <img
           onClick={() => setSelectedUser(null)}
