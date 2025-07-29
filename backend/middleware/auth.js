@@ -3,8 +3,6 @@ import jwt from "jsonwebtoken";
 
 // middleware to prtotect routes
 
-import User from "../models/User";
-
 export const protectRoute = async (req, res, next) => {
     try {
         const token = req.headers.token;
