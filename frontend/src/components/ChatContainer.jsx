@@ -8,7 +8,7 @@ const ChatContainer = ({ selectedUser, setSelectedUser }) => {
     if (scrollEnd.current) {
       scrollEnd.current.scrollIntoView({ behavior: "smooth" });
     }
-  });
+  }, []);
   return selectedUser ? (
     <div className="h-full overflow-scroll relative backdrop-blur-lg">
       {/* ----------------header--------------- */}
@@ -31,7 +31,7 @@ const ChatContainer = ({ selectedUser, setSelectedUser }) => {
         />
       </div>
       {/* -------------chat area--------------- */}
-      <div className="flex flex-col h-[calc(100%-120px)] overflow-y-scroll p-3 pb-6">
+      <div className="flex flex-col h-[calc(100%-120px)] overflow-y-scroll p-3">
         {messagesDummyData.map((msg, index) => (
           <div
             key={index}
@@ -72,7 +72,7 @@ const ChatContainer = ({ selectedUser, setSelectedUser }) => {
             </div>
           </div>
         ))}
-        <div ref={scrollEnd}></div>
+        <div ref={scrollEnd} />
       </div>
       {/* --------------footer------------- */}
       <div className="absolute left-0 right-0 bottom-0 flex items-center gap-3 p-3">

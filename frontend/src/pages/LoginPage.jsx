@@ -10,7 +10,6 @@ const LoginPage = () => {
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
-
     if (currState === "Sign up" && !isDataSubmitted) {
       setIsDataSubmitted(true);
       return;
@@ -93,7 +92,7 @@ const LoginPage = () => {
         </button>
 
         <div className="flex items-center gap-2 text-sm text-gray-600">
-          <input type="checkbox" />
+          <input type="checkbox" required/>
           <p>Agree to the terms of use & privacy policy.</p>
         </div>
 

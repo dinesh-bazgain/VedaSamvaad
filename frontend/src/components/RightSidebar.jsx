@@ -35,7 +35,7 @@ const RightSidebar = ({ selectedUser }) => {
             ))}
           </div>
         </div>
-        <button className="absolute bottom-5 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-[#24366A] to-[#C0353A] text-white border-none text-sm font-light px-20 py-2 rounded-full cursor-pointer">
+        <button className="absolute bottom-5 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-[#C0353A] to-[#24366A] text-white border-none text-sm font-light px-20 py-2 rounded-full cursor-pointer">
           LogOut
         </button>
       </div>
