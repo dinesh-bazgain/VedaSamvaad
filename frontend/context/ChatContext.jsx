@@ -1,4 +1,10 @@
-import { createContext, useEffect, useContext, useState } from "react";
+import {
+  createContext,
+  useEffect,
+  useContext,
+  useState,
+  useCallback,
+} from "react";
 import { AuthContext } from "./AuthContext";
 import toast from "react-hot-toast";
 
@@ -10,6 +16,7 @@ export const ChatProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [unseenMessages, setUnseenMessages] = useState({});
+  const [isSending, setIsSending] = useState(false);
 
   // Get authUser from AuthContext
   const { socket, axios, authUser } = useContext(AuthContext);
@@ -55,9 +62,12 @@ export const ChatProvider = ({ children }) => {
 
   // function to send a message to the selected user
   const sendMessage = async (messageData) => {
+    if (isSending) return; // Prevent multiple sends
+    setIsSending(true);
+
     try {
       // Generate temporary ID for optimistic update
-      const tempId = Date.now().toString();
+      const tempId = `temp-${Date.now()}`; // Add prefix for easier identification
 
       // Create optimistic message
       const optimisticMessage = {
@@ -67,6 +77,7 @@ export const ChatProvider = ({ children }) => {
           _id: authUser._id,
           profilePic: authUser.profilePic,
         },
+        receiverId: selectedUser._id, // Add receiverId to match server structure
         createdAt: new Date(),
         seen: false,
       };
@@ -82,69 +93,69 @@ export const ChatProvider = ({ children }) => {
 
       if (data.success) {
         // Replace optimistic message with real one
-        setMessages((prevMessage) =>
-          prevMessage.map((msg) => (msg._id === tempId ? data.newMessage : msg))
+        setMessages((prev) =>
+          prev.map((msg) => (msg._id === tempId ? data.newMessage : msg))
         );
       }
     } catch (error) {
       toast.error(error.message);
       // Remove optimistic message on error
-      setMessages((prevMessage) =>
-        prevMessage.filter((msg) => msg._id !== tempId)
-      );
+      setMessages((prev) => prev.filter((msg) => msg._id !== tempId));
+    } finally {
+      setIsSending(false); // Reset sending state
     }
   };
 
-  // function to subscribe to messages
-  const subscribeToMessages = async () => {
-    if (!socket) return;
-
-    socket.on("newMessage", (newMessage) => {
+  // Message handler with proper cleanup
+  const handleNewMessage = useCallback(
+    (newMessage) => {
       if (!newMessage || !newMessage.senderId) return;
 
       const isCurrentUser = newMessage.senderId._id === authUser._id;
-      const isFromSelectedUser =
-        selectedUser && newMessage.senderId._id === selectedUser._id;
-      const isToSelectedUser =
-        selectedUser && newMessage.receiverId === selectedUser._id;
+      const isForCurrentChat =
+        selectedUser &&
+        (newMessage.senderId._id === selectedUser._id ||
+          newMessage.receiverId === selectedUser._id);
 
       // Messages in current chat
-      if (
-        selectedUser &&
-        (isFromSelectedUser || (isCurrentUser && isToSelectedUser))
-      ) {
-        setMessages((prevMessage) => {
-          // Avoid duplicates
-          if (prevMessage.some((msg) => msg._id === newMessage._id))
-            return prevMessage;
-          return [...prevMessage, newMessage];
+      if (isForCurrentChat) {
+        setMessages((prev) => {
+          // Skip if already exists
+          const exists = prev.some(
+            (msg) =>
+              msg._id === newMessage._id ||
+              (msg._id.startsWith("temp-") &&
+                msg.text === newMessage.text &&
+                Math.abs(
+                  new Date(msg.createdAt) - new Date(newMessage.createdAt) <
+                    1000
+                ))
+          );
+          return exists ? prev : [...prev, newMessage];
         });
-
-        // Mark as seen if from other user
-        if (isFromSelectedUser) {
-          axios.put(`/api/messages/mark/${newMessage._id}`);
-        }
       }
       // Messages from other chats
       else if (!isCurrentUser) {
-        setUnseenMessages((prevMessage) => ({
-          ...prevMessage,
-          [newMessage.senderId._id]:
-            (prevMessage[newMessage.senderId._id] || 0) + 1,
+        setUnseenMessages((prev) => ({
+          ...prev,
+          [newMessage.senderId._id]: (prev[newMessage.senderId._id] || 0) + 1,
         }));
       }
-    });
-  };
+    },
+    [selectedUser, authUser]
+  );
 
-  // function to unsubscribe from messages
-  const unsubscribeFromMessages = () => {
-    if (socket) socket.off("newMessage");
-  };
-
+  // Setup socket listener with proper cleanup
   useEffect(() => {
-    subscribeToMessages();
-    return () => unsubscribeFromMessages();
-  }, [socket, selectedUser]);
+    if (!socket) return;
+
+    socket.on("newMessage", handleNewMessage);
+
+    // Cleanup function
+    return () => {
+      socket.off("newMessage", handleNewMessage);
+    };
+  }, [socket, handleNewMessage]);
 
   const value = {
     messages,
@@ -156,6 +167,7 @@ export const ChatProvider = ({ children }) => {
     setSelectedUser,
     unseenMessages,
     setUnseenMessages,
+    isSending,
   };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;

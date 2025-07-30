@@ -6,21 +6,28 @@ import assets from "../assets/assets";
 import toast from "react-hot-toast";
 
 const ChatContainer = () => {
-  const { messages, selectedUser, setSelectedUser, sendMessage, getMessages } =
-    useContext(ChatContext);
+  const {
+    messages,
+    selectedUser,
+    setSelectedUser,
+    sendMessage,
+    getMessages,
+    isSending,
+  } = useContext(ChatContext);
   const { authUser, onlineUsers } = useContext(AuthContext);
   const scrollEnd = useRef();
   const [input, setInput] = useState("");
 
   // handle sending message
   const handleSendMessage = async (e) => {
-    if (input.trim() === "") return null;
+    if (input.trim() === "" || isSending) return;
     await sendMessage({ text: input.trim() });
     setInput("");
   };
 
   // handle sending an image
   const handleSendImage = async (e) => {
+    if (isSending) return;
     const file = e.target.files[0];
     if (!file || !file.type.startsWith("image/")) {
       toast.error("Please select a valid image file.");
@@ -176,11 +183,15 @@ const ChatContainer = () => {
             />
           </label>
         </div>
-        <img
+        <button
           onClick={handleSendMessage}
-          src="./src/assets/images/sendIcon.png"
-          className="w-7 cursor-pointer"
-        />
+          disabled={isSending || input.trim() === ""}
+          className={`p-2 rounded-full ${
+            isSending ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+          }`}
+        >
+          <img src="./src/assets/images/sendIcon.png" className="w-7" />
+        </button>
       </div>
     </div>
   ) : (

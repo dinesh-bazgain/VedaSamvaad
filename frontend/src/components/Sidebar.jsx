@@ -28,11 +28,11 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`bg-[#8185B2]/10 h-full p-5 rounded-r-xl overflow-y-scroll text-white ${
+      className={`bg-[#8185B2]/10 h-full p-5 flex flex-col rounded-r-xl overflow-y-scroll text-white ${
         selectedUser ? "max-md:hidden" : ""
       }`}
     >
-      <div className="pb-5">
+      <div className="pb-5 flex-shrink-0">
         <div className="flex justify-between items-center">
           <img
             src="./src/assets/images/logo.png"
@@ -73,7 +73,8 @@ const Sidebar = () => {
           />
         </div>
       </div>
-      <div className="flex flex-col">
+
+      <div className="flex-1 overflow-y-auto px-2">
         {filteredUsers.map((user, index) => (
           <div
             key={user._id || index}

@@ -4,7 +4,7 @@ import cloudinary from "../lib/cloudinary.js";
 import { io, userSocketMap } from "../server.js";
 
 // get all user except logged in user
-export const getUsersForSidbar = async (req, res) => {
+export const getUsersForSidebar = async (req, res) => {
   try {
     const userId = req.user._id;
     const filteredUsers = await User.find({ _id: { $ne: userId } }).select(
@@ -51,8 +51,8 @@ export const getMessages = async (req, res) => {
         { senderId: selectedUserId, receiverId: myId },
       ],
     })
-    .populate('senderId', 'fullName profilePic')
-    .sort({ createdAt: 1 });
+      .populate("senderId", "fullName profilePic")
+      .sort({ createdAt: 1 });
 
     await Message.updateMany(
       { senderId: selectedUserId, receiverId: myId, seen: false },
@@ -112,9 +112,9 @@ export const sendMessage = async (req, res) => {
 
     const populatedMessage = await Message.findById(newMessage._id)
       .populate("senderId", "fullName profilePic")
-      .exec();
+      .lean(); // Use lean() for better performance
 
-    // emit message to the receiver
+    // Emit to both users
     const receiverSocketId = userSocketMap[receiverId];
     const senderSocketId = userSocketMap[senderId];
 
@@ -128,8 +128,7 @@ export const sendMessage = async (req, res) => {
 
     res.json({
       success: true,
-      newMessageessage: populatedMessage,
-      message: "Message sent successfully",
+      newMessage: populatedMessage, // Fixed key name (was newMessageessage)
     });
   } catch (error) {
     console.error("Message send error:", error);
