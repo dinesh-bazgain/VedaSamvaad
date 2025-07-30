@@ -9,6 +9,8 @@ const ProfilePage = () => {
   const navigate = useNavigate();
   const [name, setName] = useState(authUser.fullName);
   const [bio, setBio] = useState(authUser.bio);
+  const { deleteAccount } = useContext(AuthContext);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,6 +35,28 @@ const ProfilePage = () => {
     } catch (error) {
       // Error is already displayed by updateProfile
       console.error("Profile update failed:", error);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (
+      !window.confirm(
+        "Are you sure? This will permanently delete your account and all your data!"
+      )
+    ) {
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      const success = await deleteAccount();
+      if (success) {
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error("Delete account failed:", error);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -88,11 +112,24 @@ const ProfilePage = () => {
           >
             Save Profile
           </button>
+          <div className="mt-8">
+            <button
+              onClick={handleDeleteAccount}
+              disabled={isDeleting}
+              className="w-full py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
+            >
+              {isDeleting ? "Deleting Account..." : "Delete My Account"}
+            </button>
+            <p className="text-xs text-red-300 mt-2">
+              Warning: This will permanently delete your account and all your
+              messages.
+            </p>
+          </div>
         </form>
 
         {/* -----------------right---------------- */}
         <img
-          src={authUser?.profilePic || './src/assets/logo.png'}
+          src={authUser?.profilePic || "./src/assets/logo.png"}
           className={`max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10 ${
             selectedImg && "rounded-full"
           }`}
