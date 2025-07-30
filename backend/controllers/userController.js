@@ -67,24 +67,26 @@ export const checkAuth = async (req, res) => {
 // controller to update user profile
 export const updateProfile = async (req, res) => {
   try {
-    const { fullName, profilePic, bio } = req.body;
+    const { profilePic, bio, fullName } = req.body;
     const userId = req.user._id;
 
-    let updatedUser;
+    // Always include all fields in update
+    const updateData = { bio, fullName };
 
-    if (!profilePic) {
-      updatedUser = await User.findByIdAndUpdate(
-        userId,
-        { bio, fullName },
-        { new: true }
-      );
-    } else {
+    if (profilePic) {
       const upload = await cloudinary.uploader.upload(profilePic);
-      updatedUser = await User.findByIdAndUpdate(
-        userId,
-        { bio, fullName, profilePic: upload.secure_url },
-        { new: true }
-      );
+      updateData.profilePic = upload.secure_url;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
+      new: true,
+    });
+
+    if (!updatedUser) {
+      return res.json({
+        success: false,
+        message: "User not found",
+      });
     }
 
     res.json({
@@ -93,8 +95,8 @@ export const updateProfile = async (req, res) => {
       message: "Profile updated successfully",
     });
   } catch (error) {
-    console.log(error.message);
-    res.json({
+    console.error("Update error:", error);
+    res.status(500).json({
       success: false,
       message: "Server error",
       error: error.message,

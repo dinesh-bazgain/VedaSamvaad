@@ -7,6 +7,7 @@ import { connect } from "http2";
 import userRouter from "./routes/userRoutes.js";
 import messageRouter from "./routes/messageRoutes.js";
 import { Server } from "socket.io";
+import mongoose from "mongoose";
 
 // create express application and http server
 const app = express();
@@ -24,26 +25,32 @@ export const userSocketMap = {};
 
 // handle socket connections
 io.on("connection", (socket) => {
-    const userId = socket.handshake.query.userId;
-    console.log("User connected:", userId);
+  const userId = socket.handshake.query.userId;
+  if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+    console.log("Anonymous connection rejected");
+    return socket.disconnect();
+  }
+  console.log("User connected:", userId);
+  userSocketMap[userId] = socket.id;
 
-    if (userId) userSocketMap[userId] = socket.id;
+  // if (userId) userSocketMap[userId] = socket.id;
 
+  // immit online event
+  io.emit("getOnlineUsers", Object.keys(userSocketMap));
+  // handle user disconnection
+  socket.on("disconnect", () => {
+    console.log("User disconnected:", userId);
+    delete userSocketMap[userId];
     // immit online event
     io.emit("getOnlineUsers", Object.keys(userSocketMap));
-    // handle user disconnection
-    socket.on("disconnect", () => {
-        console.log("User disconnected:", userId);
-        delete userSocketMap[userId];
-        // immit online event
-        io.emit("getOnlineUsers", Object.keys(userSocketMap));
-    });
-})
+  });
+});
 
 // middleware setup
 app.use(express.json({ limit: "5mb" }));
 app.use(cors());
 
+// routs setup
 app.use("/api/status", (req, res) => {
   res.send("Server is running");
 });

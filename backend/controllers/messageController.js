@@ -1,4 +1,4 @@
-import Message from "../models/message.js";
+import Message from "../models/Message.js";
 import User from "../models/User.js";
 import cloudinary from "../lib/cloudinary.js";
 import { io, userSocketMap } from "../server.js";
@@ -31,7 +31,11 @@ export const getUsersForSidbar = async (req, res) => {
     });
   } catch (error) {
     console.log(error.message);
-    res.json({ success: false, message: "Server error", error: error.message });
+    res.json({
+      success: false,
+      message: "Server error",
+      message: error.message,
+    });
   }
 };
 
@@ -46,9 +50,12 @@ export const getMessages = async (req, res) => {
         { senderId: myId, receiverId: selectedUserId },
         { senderId: selectedUserId, receiverId: myId },
       ],
-    });
+    })
+    .populate('senderId', 'fullName profilePic')
+    .sort({ createdAt: 1 });
+
     await Message.updateMany(
-      { senderId: selectedUserId, receiverId: myId },
+      { senderId: selectedUserId, receiverId: myId, seen: false },
       { seen: true }
     );
     res.json({
@@ -85,8 +92,16 @@ export const sendMessage = async (req, res) => {
 
     let imageUrl;
     if (image) {
-      const uploadResponse = await cloudinary.uploader.upload(image);
-      imageUrl = upload.secure_url;
+      try {
+        const upload = await cloudinary.uploader.upload(image);
+        imageUrl = upload.secure_url;
+      } catch (uploadError) {
+        console.error("Image upload failed:", uploadError);
+        return res.status(500).json({
+          success: false,
+          message: "Image upload failed",
+        });
+      }
     }
     const newMessage = await Message.create({
       senderId,
@@ -94,20 +109,34 @@ export const sendMessage = async (req, res) => {
       text,
       image: imageUrl,
     });
-    
+
+    const populatedMessage = await Message.findById(newMessage._id)
+      .populate("senderId", "fullName profilePic")
+      .exec();
+
     // emit message to the receiver
     const receiverSocketId = userSocketMap[receiverId];
+    const senderSocketId = userSocketMap[senderId];
+
     if (receiverSocketId) {
-      io.to(receiverSocketId).emit("newMessage", newMessage);
+      io.to(receiverSocketId).emit("newMessage", populatedMessage);
+    }
+
+    if (senderSocketId) {
+      io.to(senderSocketId).emit("newMessage", populatedMessage);
     }
 
     res.json({
       success: true,
-      message: newMessage,
+      newMessageessage: populatedMessage,
       message: "Message sent successfully",
     });
   } catch (error) {
-    console.log(error.message);
-    res.json({ success: false, message: "Server error", error: error.message });
+    console.error("Message send error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
   }
 };

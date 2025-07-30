@@ -12,18 +12,28 @@ const ProfilePage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!selectedImg) {
-      await updateProfile({ fullName: name, bio });
+    try {
+      let base64Image = null;
+
+      if (selectedImg) {
+        base64Image = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(selectedImg);
+          reader.onload = () => resolve(reader.result);
+        });
+      }
+
+      await updateProfile({
+        fullName: name,
+        bio,
+        ...(base64Image && { profilePic: base64Image }),
+      });
+
       navigate("/");
-      return;
+    } catch (error) {
+      // Error is already displayed by updateProfile
+      console.error("Profile update failed:", error);
     }
-    const reader = new FileReader();
-    reader.readAsDataURL(selectedImg);
-    reader.onload = async () => {
-      const base64Image = reader.result;
-      await updateProfile({ profilePic: base64Image, fullName: name, bio });
-      navigate("/");
-    };
   };
 
   return (
@@ -82,8 +92,8 @@ const ProfilePage = () => {
 
         {/* -----------------right---------------- */}
         <img
-          src={authUser?.profilePic || "./src/assets/images/logo.png"}
-          className={`max-w-40 w-50 h-15 aspect-square rounded-full mx-10 max-sm:mt-10 ${
+          src={authUser?.profilePic || './src/assets/logo.png'}
+          className={`max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10 ${
             selectedImg && "rounded-full"
           }`}
         />
