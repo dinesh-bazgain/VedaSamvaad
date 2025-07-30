@@ -76,6 +76,32 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // delete user profile 
+  const deleteAccount = async () => {
+  try {
+    const { data } = await axios.delete('/api/auth/delete-account');
+    if (data.success) {
+      // Clear all user data
+      localStorage.removeItem("token");
+      setToken(null);
+      setAuthUser(null);
+      setOnlineUsers([]);
+      
+      // Disconnect socket
+      if (socket) {
+        socket.disconnect();
+      }
+      
+      toast.success(data.message);
+      return true;
+    }
+  } catch (error) {
+    const errorMsg = error.response?.data?.message || error.message;
+    toast.error(errorMsg);
+    throw error;
+  }
+};
+
   // connect to the socket server
   const connectSocket = (userData) => {
     if (!userData || socket?.connected) return;
@@ -105,6 +131,7 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     updateProfile,
+    deleteAccount
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
