@@ -2,6 +2,7 @@ import { generateToken } from "../lib/utils.js";
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import cloudinary from "../lib/cloudinary.js";
+import Message from "../models/Message.js";
 
 // Sign up new user
 export const signUp = async (req, res) => {
@@ -96,6 +97,34 @@ export const updateProfile = async (req, res) => {
     });
   } catch (error) {
     console.error("Update error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
+// deleting user account
+export const deleteAccount = async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.user._id); // Triggers the hook
+    const userId = req.user._id;
+
+    // Delete user's messages
+    await Message.deleteMany({
+      $or: [{ senderId: userId }, { receiverId: userId }],
+    });
+
+    // Delete user
+    await User.findByIdAndDelete(userId);
+
+    res.json({
+      success: true,
+      message: "Account deleted successfully",
+    });
+  } catch (error) {
+    console.error("Delete account error:", error);
     res.status(500).json({
       success: false,
       message: "Server error",
