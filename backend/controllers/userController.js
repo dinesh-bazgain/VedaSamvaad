@@ -1,11 +1,4 @@
 import { generateToken } from "../lib/utils.js";
-import fs from "fs";
-import path from "path";
-console.log(
-  "Backend models folder:",
-  fs.readdirSync(path.resolve("backend/models"))
-);
-
 import Message from "../models/Message.js";
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
