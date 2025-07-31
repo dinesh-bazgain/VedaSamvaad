@@ -1,6 +1,6 @@
 import Message from "../models/Message.js";
 import User from "../models/User.js";
-import cloudinary from "../lib/cloudinary.js";
+import cloudinary from "../lib/cloudinary.js"; // Assuming cloudinary config is in lib/cloudinary.js
 import { io, userSocketMap } from "../server.js";
 
 // get all user except logged in user
@@ -30,11 +30,12 @@ export const getUsersForSidebar = async (req, res) => {
       unseenMessages,
     });
   } catch (error) {
-    console.log(error.message);
-    res.json({
+    console.error("Error in getUsersForSidebar:", error.message); // Changed to console.error
+    res.status(500).json({
+      // Use 500 for server errors
       success: false,
-      message: "Server error",
-      message: error.message,
+      message: "Server error fetching users",
+      error: error.message,
     });
   }
 };
@@ -63,8 +64,14 @@ export const getMessages = async (req, res) => {
       messages,
     });
   } catch (error) {
-    console.log(error.message);
-    res.json({ success: false, message: "Server error", error: error.message });
+    console.error("Error in getMessages:", error.message); // Changed to console.error
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Server error fetching messages",
+        error: error.message,
+      }); // Use 500
   }
 };
 
@@ -73,13 +80,24 @@ export const markMessageAsSeen = async (req, res) => {
   try {
     const { id } = req.params;
     const message = await Message.findByIdAndUpdate(id, { seen: true });
+    if (!message) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Message not found" });
+    }
     res.json({
       success: true,
       message: "Message marked as seen",
     });
   } catch (error) {
-    console.log(error.message);
-    res.json({ success: false, message: "Server error", error: error.message });
+    console.error("Error in markMessageAsSeen:", error.message); // Changed to console.error
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Server error marking message as seen",
+        error: error.message,
+      }); // Use 500
   }
 };
 
@@ -93,21 +111,34 @@ export const sendMessage = async (req, res) => {
     let imageUrl;
     if (image) {
       try {
-        const upload = await cloudinary.uploader.upload(image);
+        const upload = await cloudinary.uploader.upload(image, {
+          folder: "chat_images", // Optional: Organize uploads in a specific folder
+          // You can add more options like quality, format, transformations here
+        });
         imageUrl = upload.secure_url;
       } catch (uploadError) {
-        console.error("Image upload failed:", uploadError);
+        console.error("Cloudinary Image Upload Failed:", uploadError); // More specific error message
         return res.status(500).json({
           success: false,
-          message: "Image upload failed",
+          message: "Failed to upload image. Please try again later.",
+          error: uploadError.message, // Send back the error message for debugging
         });
       }
     }
+
+    // Input validation: Ensure at least text or an image is provided
+    if (!text && !imageUrl) {
+      return res.status(400).json({
+        success: false,
+        message: "Cannot send empty message. Please provide text or an image.",
+      });
+    }
+
     const newMessage = await Message.create({
       senderId,
       receiverId,
       text,
-      image: imageUrl,
+      image: imageUrl, // Will be undefined if no image was uploaded
     });
 
     const populatedMessage = await Message.findById(newMessage._id)
@@ -122,19 +153,23 @@ export const sendMessage = async (req, res) => {
       io.to(receiverSocketId).emit("newMessage", populatedMessage);
     }
 
-    if (senderSocketId) {
+    // Only emit to sender if they are not the receiver (to avoid duplicate display from socket and optimistic update)
+    // If the sender is also the receiver (e.g., sending a message to self for testing),
+    // the optimistic update already handled it, and the socket might cause a duplicate.
+    if (senderSocketId && senderId.toString() !== receiverId.toString()) {
       io.to(senderSocketId).emit("newMessage", populatedMessage);
     }
 
-    res.json({
+    res.status(201).json({
+      // Use 201 Created for successful resource creation
       success: true,
       newMessage: populatedMessage,
     });
   } catch (error) {
-    console.error("Message send error:", error);
+    console.error("Server Error in sendMessage:", error); // General server error
     res.status(500).json({
       success: false,
-      message: "Server error",
+      message: "An internal server error occurred while sending the message.",
       error: error.message,
     });
   }
