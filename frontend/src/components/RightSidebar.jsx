@@ -11,7 +11,7 @@ const RightSidebar = ({ selectedUser }) => {
       >
         <div className="pt-16 flex flex-col items-center gap-2 text-xs font-light mx-auto">
           <img
-            src={selectedUser?.profilePic || assets.avatar_icon}
+            src={selectedUser?.profilePic || './src/assets/images/avatarIcon.png'}
             className="w-20 aspecr-[1/1] rounded-full"
           />
           <h1 className="px-10 font-medium text-xl mx-auto flex items-center gap-2">

@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { formatMessageTime } from "../lib/utils";
 import { ChatContext } from "../../context/ChatContext";
 import { AuthContext } from "../../context/AuthContext";
-import assets from "../assets/assets";
 import toast from "react-hot-toast";
 
 const ChatContainer = () => {
@@ -58,7 +57,7 @@ const ChatContainer = () => {
       {/* ----------------header--------------- */}
       <div className="flex items-center gap-3 py-3 mx-4 border-b border-stone-500">
         <img
-          src={selectedUser.profilePic || assets.avatar_icon}
+          src={selectedUser.profilePic || './src/assets/images/avatarIcon.png'}
           alt=""
           className="w-8 rounded-full"
         />
@@ -97,8 +96,8 @@ const ChatContainer = () => {
           const isCurrentUser = senderId === authUser._id;
 
           const senderProfile = isCurrentUser
-            ? authUser?.profilePic || assets.avatar_icon
-            : selectedUser?.profilePic || assets.avatar_icon;
+            ? authUser?.profilePic || './src/assets/images/avatarIcon.png'
+            : selectedUser?.profilePic || './src/assets/images/avatarIcon.png';
 
           return (
             <div

@@ -84,9 +84,9 @@ const ProfilePage = () => {
               src={
                 selectedImg
                   ? URL.createObjectURL(selectedImg)
-                  : assets.avatar_icon
+                  : './src/assets/images/avatarIcon.png'
               }
-              className={`w-12 h-12 ${selectedImg && "rounded-full"}`}
+              className={`w-12 h-12 ${selectedImg} {/* && "rounded-full"} */} rounded-full`}
             />
             Upload Profile Picture
           </label>
@@ -129,7 +129,7 @@ const ProfilePage = () => {
 
         {/* -----------------right---------------- */}
         <img
-          src={authUser?.profilePic || "./src/assets/logo.png"}
+          src={authUser?.profilePic || "./src/assets/images/logo.png"}
           className={`max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10 ${
             selectedImg && "rounded-full"
           }`}

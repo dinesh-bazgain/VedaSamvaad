@@ -128,7 +128,7 @@ export const sendMessage = async (req, res) => {
 
     res.json({
       success: true,
-      newMessage: populatedMessage, // Fixed key name (was newMessageessage)
+      newMessage: populatedMessage,
     });
   } catch (error) {
     console.error("Message send error:", error);
