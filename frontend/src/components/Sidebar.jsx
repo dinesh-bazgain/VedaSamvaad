@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import assets from "../assets/assets";
 import { AuthContext } from "../../context/AuthContext";
 import { ChatContext } from "../../context/ChatContext";
 
@@ -15,6 +14,7 @@ const Sidebar = () => {
   } = useContext(ChatContext);
   const { logout, onlineUsers } = useContext(AuthContext);
   const [input, setInput] = useState("");
+  const [showMenu, setShowMenu] = useState(false); // State for menu visibility
   const navigate = useNavigate();
   const filteredUsers = input
     ? users.filter((user) =>
@@ -25,6 +25,16 @@ const Sidebar = () => {
   useEffect(() => {
     getUsers();
   }, [onlineUsers]);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      if (showMenu) setShowMenu(false);
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [showMenu]);
 
   return (
     <div
@@ -39,24 +49,30 @@ const Sidebar = () => {
             alt="logo"
             className="max-w-25"
           />
-          <div className="relative py-2 group">
+          <div className="relative py-2">
             <img
               src="./src/assets/images/menuIcon.png"
               alt="Menu"
-              className="max-h-5 cursor-pointer"
+              className="max-h-7 cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowMenu(!showMenu);
+              }}
             />
-            <div className="absolute top-full right-0 z-20 w-32 p-5 rounded-md bg-[#282142] border-gray-600 text-gray-100 hidden group-hover:block">
-              <p
-                onClick={() => navigate("/profile")}
-                className="cursor-pointer text-sm"
-              >
-                Edit Profile
-              </p>
-              <hr className="my-2 border-t border-gray-500" />
-              <p onClick={() => logout()} className="cursor-pointer text-sm">
-                LogOut
-              </p>
-            </div>
+            {showMenu && (
+              <div className="absolute top-full right-0 z-20 w-32 p-5 rounded-md bg-[#282142] border-gray-600 text-gray-100">
+                <p
+                  onClick={() => navigate("/profile")}
+                  className="cursor-pointer text-sm"
+                >
+                  Edit Profile
+                </p>
+                <hr className="my-2 border-t border-gray-500" />
+                <p onClick={() => logout()} className="cursor-pointer text-sm">
+                  LogOut
+                </p>
+              </div>
+            )}
           </div>
         </div>
         <div className="bg-[#20376E] rounded-full flex items-center gap-2 py-3 px-4 mt-5">
@@ -90,7 +106,7 @@ const Sidebar = () => {
             }`}
           >
             <img
-              src={user?.profilePic || './src/assets/images/avatarIcon.png'}
+              src={user?.profilePic || "./src/assets/images/avatarIcon.png"}
               alt=""
               className="w-[35px] aspect-[1/1] rounded-full"
             />
