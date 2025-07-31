@@ -62,7 +62,4 @@ await connectDB();
 const PORT = process.env.PORT || 5001;
 server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
 
-// exporting for versel
-export default function handler(req, res) {
-  return app(req, res);
-}
+
