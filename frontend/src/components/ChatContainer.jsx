@@ -71,7 +71,7 @@ const ChatContainer = () => {
         <div className="flex items-center gap-3 py-3 mx-4 border-b border-stone-500">
           <img
             src={
-              selectedUser.profilePic || "./src/assets/images/avatarIcon.png"
+              selectedUser.profilePic || ".opt/render/project/src/assets/images/avatarIcon.png"
             }
             alt=""
             className="w-8 rounded-full"
