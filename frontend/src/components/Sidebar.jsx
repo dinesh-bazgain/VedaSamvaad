@@ -45,7 +45,7 @@ const Sidebar = () => {
       <div className="pb-5 flex-shrink-0">
         <div className="flex justify-between items-center">
           <img
-            src="./src/assets/images/logo.png"
+            src="./opt/render/project/src/assets/images/logo.png"
             alt="logo"
             className="max-w-25"
           />
