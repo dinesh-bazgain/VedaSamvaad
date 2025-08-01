@@ -83,7 +83,7 @@ const ProfilePage = () => {
               src={
                 selectedImg
                   ? URL.createObjectURL(selectedImg)
-                  : "./src/assets/images/avatarIcon.png"
+                  : "./assets/images/avatarIcon.png"
               }
               className={`w-12 h-12 ${selectedImg} {/* && "rounded-full"} */} rounded-full`}
             />
@@ -128,7 +128,7 @@ const ProfilePage = () => {
 
         {/* -----------------right---------------- */}
         <img
-          src={authUser?.profilePic || "./src/assets/images/logo.png"}
+          src={authUser?.profilePic || "./assets/images/logo.png"}
           className={`max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10 ${
             selectedImg && "rounded-full"
           }`}

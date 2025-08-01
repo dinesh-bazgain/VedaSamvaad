@@ -44,14 +44,10 @@ const Sidebar = () => {
     >
       <div className="pb-5 flex-shrink-0">
         <div className="flex justify-between items-center">
-          <img
-            src="./opt/render/project/src/assets/images/logo.png"
-            alt="logo"
-            className="max-w-25"
-          />
+          <img src="./assets/images/logo.png" alt="logo" className="max-w-25" />
           <div className="relative py-2">
             <img
-              src="./src/assets/images/menuIcon.png"
+              src="./assets/images/menuIcon.png"
               alt="Menu"
               className="max-h-7 cursor-pointer"
               onClick={(e) => {
@@ -77,7 +73,7 @@ const Sidebar = () => {
         </div>
         <div className="bg-[#20376E] rounded-full flex items-center gap-2 py-3 px-4 mt-5">
           <img
-            src="./src/assets/images/searchIcon.png"
+            src="./assets/images/searchIcon.png"
             alt="Search"
             className="w-3"
           />
@@ -106,7 +102,7 @@ const Sidebar = () => {
             }`}
           >
             <img
-              src={user?.profilePic || "./src/assets/images/avatarIcon.png"}
+              src={user?.profilePic || "./assets/images/avatarIcon.png"}
               alt=""
               className="w-[35px] aspect-[1/1] rounded-full"
             />

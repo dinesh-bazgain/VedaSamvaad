@@ -28,10 +28,7 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen bg-cover bg-cenrter flex items-center justify-center gap-8 sm:justify-evenly max-sm:flex-col backdrop-blur-2xl">
       {/* -----------------left---------------- */}
-      <img
-        src="./src/assets/images/logo.png"
-        className="w-[min(30vw, 250px)]"
-      />
+      <img src="./assets/images/logo.png" className="w-[min(30vw, 250px)]" />
 
       {/* ----------------right---------------- */}
       <form
@@ -44,7 +41,7 @@ const LoginPage = () => {
           {isDataSubmitted && (
             <img
               onClick={() => setIsDataSubmitted(false)}
-              src="./src/assets/images/arrowIcon.png"
+              src="./assets/images/arrowIcon.png"
               className="w-5 cursor-pointer"
             />
           )}
@@ -101,7 +98,7 @@ const LoginPage = () => {
         </button>
 
         <div className="flex items-center gap-2 text-sm text-gray-600">
-          <input type="checkbox" required/>
+          <input type="checkbox" required />
           <p>Agree to the terms of use & privacy policy.</p>
         </div>
 

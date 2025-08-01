@@ -70,9 +70,7 @@ const ChatContainer = () => {
         {/* ----------------header--------------- */}
         <div className="flex items-center gap-3 py-3 mx-4 border-b border-stone-500">
           <img
-            src={
-              selectedUser.profilePic || ".opt/render/project/src/assets/images/avatarIcon.png"
-            }
+            src={selectedUser.profilePic || "./assets/images/avatarIcon.png"}
             alt=""
             className="w-8 rounded-full"
           />
@@ -88,13 +86,13 @@ const ChatContainer = () => {
           </p>
           <img
             onClick={() => setSelectedUser(null)}
-            src="./src/assets/images/arrowIcon.png"
+            src="./assets/images/arrowIcon.png"
             alt=""
             className="md:hidden max-w-7 cursor-pointer"
           />
           <img
             onClick={() => setShowRightSidebar(!showRightSidebar)}
-            src="./src/assets/images/infoIcon.png"
+            src="./assets/images/infoIcon.png"
             alt="Toggle sidebar"
             className="max-md:hidden max-w-5 cursor-pointer"
           />
@@ -114,9 +112,8 @@ const ChatContainer = () => {
             const isCurrentUser = senderId === authUser._id;
 
             const senderProfile = isCurrentUser
-              ? authUser?.profilePic || "./src/assets/images/avatarIcon.png"
-              : selectedUser?.profilePic ||
-                "./src/assets/images/avatarIcon.png";
+              ? authUser?.profilePic || "./assets/images/avatarIcon.png"
+              : selectedUser?.profilePic || "./assets/images/avatarIcon.png";
 
             return (
               <div
@@ -198,7 +195,7 @@ const ChatContainer = () => {
             />
             <label htmlFor="images">
               <img
-                src="./src/assets/images/linkIcon.png"
+                src="./assets/images/linkIcon.png"
                 className="w-5 mr-2 cursor-pointer"
               />
             </label>
@@ -210,7 +207,7 @@ const ChatContainer = () => {
               isSending ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
             }`}
           >
-            <img src="./src/assets/images/sendIcon.png" className="w-7" />
+            <img src="./assets/images/sendIcon.png" className="w-7" />
           </button>
         </div>
       </div>
@@ -220,7 +217,7 @@ const ChatContainer = () => {
     </div>
   ) : (
     <div className="flex flex-col items-center justify-center gap-2 text-gray-500 bg-white/10 max-md:hidden">
-      <img src="./src/assets/images/logo.png" className="max-w-16" />
+      <img src="./assets/images/logo.png" className="max-w-16" />
       <p className="text-lg font=medium text-white"> Chat anytime, anywhere</p>
     </div>
   );
