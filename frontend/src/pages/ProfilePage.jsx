@@ -115,11 +115,14 @@ const ProfilePage = () => {
             <button
               onClick={handleDeleteAccount}
               disabled={isDeleting}
-              className="w-full py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
+              className="w-full py-3 bg-[#C0353A] text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
             >
               {isDeleting ? "Deleting Account..." : "Delete My Account"}
             </button>
-            <p className="text-xs text-red-300 mt-2">
+            <p
+              className="text-xs mt-2 text-center"
+              style={{ color: "#C0353A" }}
+            >
               Warning: This will permanently delete your account and all your
               messages.
             </p>
