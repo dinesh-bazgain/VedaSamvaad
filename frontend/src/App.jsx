@@ -9,7 +9,15 @@ import { AuthContext } from "../context/AuthContext";
 const App = () => {
   const { authUser } = useContext(AuthContext);
   return (
-    <div className="min-h-screen bg-gray-400 bg-[url('./public/background.png')] bg-no-repeat bg-center bg-[length:300px_300px]">
+    <div
+      className="min-h-screen bg-gray-400"
+      style={{
+        backgroundImage: "url('/background.png')",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "300px 300px",
+      }}
+    >
       <Toaster />
       <Routes>
         <Route
