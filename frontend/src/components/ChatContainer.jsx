@@ -27,8 +27,11 @@ const ChatContainer = () => {
   // handle sending message
   const handleSendMessage = async (e) => {
     if (input.trim() === "" || isSending) return;
-    await sendMessage({ text: input.trim() });
+    const messageText = input.trim();
     setInput("");
+    sendMessage({ text: messageText });
+
+    setShouldAutoScroll(true);
   };
 
   // handle sending an image
@@ -202,9 +205,11 @@ const ChatContainer = () => {
           </div>
           <button
             onClick={handleSendMessage}
-            disabled={isSending || input.trim() === ""}
-            className={`p-2 rounded-full ${
-              isSending ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+            disabled={input.trim() === ""}
+            className={`p-3 rounded-full ${
+              input.trim() === ""
+                ? "opacity-50 cursor-not-allowed"
+                : "cursor-pointer"
             }`}
           >
             <img src="./assets/images/sendIcon.png" className="w-7" />
