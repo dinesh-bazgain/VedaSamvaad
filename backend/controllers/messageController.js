@@ -30,9 +30,8 @@ export const getUsersForSidebar = async (req, res) => {
       unseenMessages,
     });
   } catch (error) {
-    console.error("Error in getUsersForSidebar:", error.message); // Changed to console.error
+    console.error("Error in getUsersForSidebar:", error.message);
     res.status(500).json({
-      // Use 500 for server errors
       success: false,
       message: "Server error fetching users",
       error: error.message,
@@ -64,14 +63,12 @@ export const getMessages = async (req, res) => {
       messages,
     });
   } catch (error) {
-    console.error("Error in getMessages:", error.message); // Changed to console.error
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Server error fetching messages",
-        error: error.message,
-      }); // Use 500
+    console.error("Error in getMessages:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Server error fetching messages",
+      error: error.message,
+    });
   }
 };
 
@@ -90,14 +87,12 @@ export const markMessageAsSeen = async (req, res) => {
       message: "Message marked as seen",
     });
   } catch (error) {
-    console.error("Error in markMessageAsSeen:", error.message); // Changed to console.error
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Server error marking message as seen",
-        error: error.message,
-      }); // Use 500
+    console.error("Error in markMessageAsSeen:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Server error marking message as seen",
+      error: error.message,
+    });
   }
 };
 
@@ -112,21 +107,19 @@ export const sendMessage = async (req, res) => {
     if (image) {
       try {
         const upload = await cloudinary.uploader.upload(image, {
-          folder: "chat_images", // Optional: Organize uploads in a specific folder
-          // You can add more options like quality, format, transformations here
+          folder: "chat_images",
         });
         imageUrl = upload.secure_url;
       } catch (uploadError) {
-        console.error("Cloudinary Image Upload Failed:", uploadError); // More specific error message
+        console.error("Cloudinary Image Upload Failed:", uploadError);
         return res.status(500).json({
           success: false,
           message: "Failed to upload image. Please try again later.",
-          error: uploadError.message, // Send back the error message for debugging
+          error: uploadError.message,
         });
       }
     }
 
-    // Input validation: Ensure at least text or an image is provided
     if (!text && !imageUrl) {
       return res.status(400).json({
         success: false,
@@ -138,12 +131,12 @@ export const sendMessage = async (req, res) => {
       senderId,
       receiverId,
       text,
-      image: imageUrl, // Will be undefined if no image was uploaded
+      image: imageUrl,
     });
 
     const populatedMessage = await Message.findById(newMessage._id)
       .populate("senderId", "fullName profilePic")
-      .lean(); // Use lean() for better performance
+      .lean();
 
     // Emit to both users
     const receiverSocketId = userSocketMap[receiverId];
@@ -153,20 +146,16 @@ export const sendMessage = async (req, res) => {
       io.to(receiverSocketId).emit("newMessage", populatedMessage);
     }
 
-    // Only emit to sender if they are not the receiver (to avoid duplicate display from socket and optimistic update)
-    // If the sender is also the receiver (e.g., sending a message to self for testing),
-    // the optimistic update already handled it, and the socket might cause a duplicate.
     if (senderSocketId && senderId.toString() !== receiverId.toString()) {
       io.to(senderSocketId).emit("newMessage", populatedMessage);
     }
 
     res.status(201).json({
-      // Use 201 Created for successful resource creation
       success: true,
       newMessage: populatedMessage,
     });
   } catch (error) {
-    console.error("Server Error in sendMessage:", error); // General server error
+    console.error("Server Error in sendMessage:", error);
     res.status(500).json({
       success: false,
       message: "An internal server error occurred while sending the message.",
