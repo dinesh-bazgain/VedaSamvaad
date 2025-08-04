@@ -30,7 +30,6 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// Use findOneAndDelete instead of deleteOne
 userSchema.pre("findOneAndDelete", async function (next) {
   try {
     const user = await this.model.findOne(this.getQuery());

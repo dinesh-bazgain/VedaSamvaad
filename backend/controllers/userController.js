@@ -108,7 +108,6 @@ export const updateProfile = async (req, res) => {
 // deleting user account
 export const deleteAccount = async (req, res) => {
   try {
-    await User.findByIdAndDelete(req.user._id); // Triggers the hook
     const userId = req.user._id;
 
     // Delete user's messages
@@ -116,8 +115,14 @@ export const deleteAccount = async (req, res) => {
       $or: [{ senderId: userId }, { receiverId: userId }],
     });
 
-    // Delete user
-    await User.findByIdAndDelete(userId);
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
 
     res.json({
       success: true,
