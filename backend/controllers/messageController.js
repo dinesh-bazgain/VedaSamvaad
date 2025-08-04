@@ -72,7 +72,7 @@ export const getMessages = async (req, res) => {
   }
 };
 
-// api to mark message as seen
+// mark message as seen
 export const markMessageAsSeen = async (req, res) => {
   try {
     const { id } = req.params;
