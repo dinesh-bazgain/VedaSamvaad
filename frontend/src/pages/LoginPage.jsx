@@ -35,7 +35,6 @@ const LoginPage = () => {
         onSubmit={onSubmitHandler}
         className="border-2 bg-white/10 backdrop-blur-md text-white border-gray-600 p-6 flex flex-col gap-5 rounded-xl shadow-xl w-full max-w-md"
       >
-        {/* ... rest of your form code remains the same ... */}
         <h2 className="font-medium text-2xl flex justify-between items-center">
           {currState}
           {isDataSubmitted && (

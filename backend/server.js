@@ -32,8 +32,6 @@ io.on("connection", (socket) => {
   console.log("User connected:", userId);
   userSocketMap[userId] = socket.id;
 
-  // if (userId) userSocketMap[userId] = socket.id;
-
   // immit online event
   io.emit("getOnlineUsers", Object.keys(userSocketMap));
   // handle user disconnection
