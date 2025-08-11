@@ -31,7 +31,7 @@ Check out the live version here [Live Demo](https://vedasamvaad-frontend.onrende
 
 ### How to Run
 
-- Clone the repo: => git clone
+- Clone the repo: => git clone https://github.com/dinesh-bazgain/VedaSamvaad.git
 
 ### Usage
 
