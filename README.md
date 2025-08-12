@@ -26,18 +26,16 @@ Check out the live version here [Live Demo](https://vedasamvaad-frontend.onrende
 
 ### Prerequisites
 
-- A modern web browser (Chrome, Firefox, etc.)  
+- A modern web browser (Chrome, Firefox, etc.)
 - Internet connection
 
 ### How to Run
 
-- Clone the repo: => git clone 
+- Clone the repo: => git clone
 
 ### Usage
 
-
 ### Known Issues
-
 
 ### Future Improvements
 
