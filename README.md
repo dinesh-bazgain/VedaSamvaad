@@ -102,4 +102,4 @@ This project is licensed under the MIT License.
 
 ## Contact
 
-For questions or feedback, please contact [Dinesh Bajgain](mailto:dinesh.bazgain@gmail.com).
+For questions or feedback, please contact [Dinesh Bajgain](mailto:dinesh.bazgain@gmail.com)
