@@ -85,7 +85,7 @@ Check out the live version here: [Live Demo](https://vedasamvaad-frontend.onrend
 
 ## Future Improvements
 
-- [ ] Group chat functionality
+- Group chat functionality
 - [ ] Push notifications
 - [ ] Enhanced media support (videos, documents)
 - [ ] Improved UI/UX
