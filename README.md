@@ -79,16 +79,18 @@ Check out the live version here: [Live Demo](https://vedasamvaad-frontend.onrend
 
 ## Known Issues
 
-- [ ] List any known bugs or limitations here.
+- Large size cannot be shared
+- Slow in speed
 
 ---
 
 ## Future Improvements
 
 - Group chat functionality
-- [ ] Push notifications
-- [ ] Enhanced media support (videos, documents)
-- [ ] Improved UI/UX
+- Audio/Video call functionality
+- Push notifications
+- Enhanced media support (videos, documents)
+- Improved UI/UX
 
 ---
 
