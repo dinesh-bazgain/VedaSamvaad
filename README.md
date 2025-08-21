@@ -32,33 +32,39 @@ Check out the live version here: [Live Demo](https://vedasamvaad-frontend.onrend
 ### Installation
 
 1. **Clone the repository:**
+
    ```sh
    git clone https://github.com/dinesh-bazgain/VedaSamvaad.git
    cd VedaSamvaad
    ```
 
 2. **Install backend dependencies:**
+
    ```sh
    cd backend
    npm install
    ```
 
 3. **Install frontend dependencies:**
+
    ```sh
    cd ../frontend
    npm install
    ```
 
 4. **Set up environment variables:**
+
    - Create a `.env` file in the `backend` directory with your MongoDB URI and any other required secrets.
 
 5. **Start the backend server:**
+
    ```sh
    cd ../backend
    npm start
    ```
 
 6. **Start the frontend development server:**
+
    ```sh
    cd ../frontend
    npm run dev
